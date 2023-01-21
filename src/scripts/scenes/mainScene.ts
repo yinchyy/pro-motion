@@ -1,6 +1,6 @@
-import PhaserLogo from '../objects/phaserLogo'
 import FpsText from '../objects/fpsText'
 
+var missile
 export default class MainScene extends Phaser.Scene {
   fpsText
 
@@ -9,8 +9,14 @@ export default class MainScene extends Phaser.Scene {
   }
 
   create() {
-    new PhaserLogo(this, this.cameras.main.width / 2, 0)
     this.fpsText = new FpsText(this)
+    missile = this.matter.add.image(0, 600, 'phaser-logo').setBounce(0.3)
+    //this.matter.add.mouseSpring({ length: 1, stiffness: 0.6 })
+    this.matter.world.setBounds()
+    missile.setFriction(3)
+    this.input.on('pointerdown', pointer => {
+      this.matter.setVelocity(missile, 30, -55)
+    })
 
     // display the Phaser.VERSION
     this.add

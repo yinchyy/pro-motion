@@ -1,3 +1,5 @@
+import Phaser from 'phaser'
+
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
     super({ key: 'PreloadScene' })
@@ -8,6 +10,8 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   create() {
+    this.matter.world.setBounds()
+    this.matter.add.image(400, 400, 'phaser-logo', 0, { mass: 13 }).setBounce(0.6)
     this.scene.start('MainScene')
 
     /**

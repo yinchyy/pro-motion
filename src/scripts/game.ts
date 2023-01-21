@@ -17,10 +17,16 @@ const config = {
   },
   scene: [PreloadScene, MainScene],
   physics: {
-    default: 'arcade',
-    arcade: {
-      debug: false,
-      gravity: { y: 400 }
+    default: 'matter',
+    matter: {
+      enableSleeping: true,
+      gravity: {
+        y: 9.81
+      },
+      debug: {
+        showBody: true,
+        showStaticBody: true
+      }
     }
   }
 }
