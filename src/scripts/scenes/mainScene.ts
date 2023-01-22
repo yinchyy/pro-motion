@@ -10,10 +10,27 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.fpsText = new FpsText(this)
-    missile = this.matter.add.image(0, 600, 'phaser-logo').setBounce(0.3)
+    //missile = this.matter.add.image(0, 600, 'phaser-logo').setBounce(0.3)
     //this.matter.add.mouseSpring({ length: 1, stiffness: 0.6 })
     this.matter.world.setBounds()
-    missile.setFriction(3)
+    //missile.setFriction(3)
+    var cannonHead = this.add.image(60, 621, 'cannon_head').setDepth(1)
+    var cannon = this.add.image(60, 669, 'cannon_body').setDepth(1)
+    var angle = 0
+    var gfx = this.add.graphics().setDefaultStyles({ lineStyle: { width: 10, color: 0xffdd00, alpha: 0.5 } })
+    var line = new Phaser.Geom.Line()
+
+    this.input.on(
+      'pointermove',
+      function (pointer) {
+        angle = Phaser.Math.Angle.BetweenPoints(cannon, pointer)
+        cannonHead.rotation = angle
+        Phaser.Geom.Line.SetToAngle(line, cannon.x, cannon.y - 50, angle, 128)
+        gfx.clear().strokeLineShape(line)
+      },
+      this
+    )
+
     this.input.on('pointerdown', pointer => {
       this.matter.setVelocity(this.matter.add.image(200, 300, 'pangball').setCircle(15), 30, -55)
       //this.matter.setVelocity(this.matter.add.circle(0, 600, 25), 30, -55)
