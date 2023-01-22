@@ -15,18 +15,19 @@ export default class MainScene extends Phaser.Scene {
     this.matter.world.setBounds()
     missile.setFriction(3)
     this.input.on('pointerdown', pointer => {
-      this.matter.setVelocity(missile, 30, -55)
+      this.matter.setVelocity(this.matter.add.image(200, 300, 'pangball').setCircle(15), 30, -55)
+      //this.matter.setVelocity(this.matter.add.circle(0, 600, 25), 30, -55)
+      //this.matter.setVelocity(missile, 30, -55)
     })
 
     // display the Phaser.VERSION
     this.add
       .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
-        color: '#000000',
+        color: 'white',
         fontSize: '24px'
       })
       .setOrigin(1, 0)
   }
-
   update() {
     this.fpsText.update()
   }
