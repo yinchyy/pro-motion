@@ -1,5 +1,5 @@
 import FpsText from '../objects/fpsText'
-
+import dat from 'dat.gui'
 var missile
 export default class MainScene extends Phaser.Scene {
   fpsText
@@ -14,6 +14,7 @@ export default class MainScene extends Phaser.Scene {
     var cannonHead = this.add.image(60, 621, 'cannon_head').setDepth(1)
     var cannon = this.add.image(60, 669, 'cannon_body').setDepth(1)
     var angle = 0
+    var data = { angle: '0', velocity: 50, velocity_y: 0, velocity_x: 0, range: '0', peak: '0' }
     var sketch = this.add.graphics().setDefaultStyles({ lineStyle: { width: 6, color: 0x8fa3a5 } })
     var line = new Phaser.Geom.Line()
     let mToPxRatio = 1.7
@@ -22,10 +23,22 @@ export default class MainScene extends Phaser.Scene {
       'pointermove',
       function (pointer) {
         angle = Phaser.Math.Angle.BetweenPoints(cannonHead, pointer)
+        data.angle = `${Phaser.Math.RadToDeg(-angle).toFixed(2)}deg`
+        data.velocity_y = Math.sin(angle) * data.velocity
+        data.velocity_x = Math.cos(angle) * data.velocity
+        data.range = `${(-(Math.pow(data.velocity, 2) / 9.81) * Math.sin(2 * angle)).toFixed(2)}m`
+        if (Phaser.Math.RadToDeg(-angle) < 0) {
+          data.peak = `0.00m`
+        } else {
+          data.peak = `${(Math.pow(data.velocity_y, 2) / (2 * 9.81)).toFixed(2)}m`
+        }
         cannonHead.rotation = angle
         sketch.clear()
         const pos = (x: number) => {
-          return mToPxRatio * x * Math.tan(angle) - (-9.81 / (2 * Math.pow(Math.cos(angle) * 50, 2))) * Math.pow(x, 2)
+          return (
+            mToPxRatio * x * Math.tan(angle) -
+            (-9.81 / (2 * Math.pow(Math.cos(angle) * data.velocity, 2))) * Math.pow(x, 2)
+          )
         }
         if (angle > 1.25 && angle < 1.85) {
           return
@@ -54,12 +67,7 @@ export default class MainScene extends Phaser.Scene {
     this.input.on('pointerdown', pointer => {
       let ball = this.matter.add.image(60, 620, 'pangball')
       ball.setCircle(15)
-      this.matter.setVelocity(ball, Math.cos(angle) * 50, Math.sin(angle) * 50)
-      console.log(
-        `x:${Math.cos(angle) * 50}, y:${Math.sin(angle) * 50}, distance: ${
-          -(Math.sin(2 * angle) * Math.pow(50, 2)) / 9.81
-        }, phaser distance:${Phaser.Math.Distance.BetweenPoints(cannonHead, ball)}`
-      )
+      this.matter.setVelocity(ball, data.velocity_x, data.velocity_y)
       //  let ball = this.matter.add.image(40, 630, 'pangball')
       //  ball.setCircle(15)
       //  ball.setMass(10)
@@ -68,7 +76,24 @@ export default class MainScene extends Phaser.Scene {
       //    y: Math.sin(angle) * 3
       //  })
     })
+    this.input.on('wheel', event => {
+      if (event.deltaY < 0) {
+        data.velocity += 2
+      }
+      if (event.deltaY > 0) {
+        data.velocity -= 2
+      }
+    })
 
+    var gui = new dat.GUI()
+    var p1 = gui.addFolder('Missile trajectory data')
+    p1.add(data, 'angle').listen()
+    p1.add(data, 'velocity').listen()
+    p1.add(data, 'velocity_x').listen()
+    p1.add(data, 'velocity_y').listen()
+    p1.add(data, 'range').listen()
+    p1.add(data, 'peak').listen()
+    p1.open()
     // display the Phaser.VERSION
     this.add
       .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
