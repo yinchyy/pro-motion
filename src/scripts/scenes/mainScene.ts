@@ -14,7 +14,7 @@ export default class MainScene extends Phaser.Scene {
     var cannonHead = this.add.image(60, 621, 'cannon_head').setDepth(1)
     var cannon = this.add.image(60, 669, 'cannon_body').setDepth(1)
     var angle = 0
-    var sketch = this.add.graphics().setDefaultStyles({ lineStyle: { width: 2, color: 0x00ff00 } })
+    var sketch = this.add.graphics().setDefaultStyles({ lineStyle: { width: 6, color: 0x8fa3a5 } })
     var line = new Phaser.Geom.Line()
     let mToPxRatio = 1.7
 
@@ -28,7 +28,6 @@ export default class MainScene extends Phaser.Scene {
           return mToPxRatio * x * Math.tan(angle) - (-9.81 / (2 * Math.pow(Math.cos(angle) * 50, 2))) * Math.pow(x, 2)
         }
         for (let x = 0; x < 490; x += 3) {
-          console.log(`pos(${Phaser.Math.RadToDeg(angle)})=${pos(x) + 620}`)
           line.setTo(mToPxRatio * x + 60, pos(x) + 620, mToPxRatio * (x + 2) + 60, pos(x + 2) + 620)
           sketch.strokeLineShape(line)
         }
