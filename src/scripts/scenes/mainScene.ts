@@ -27,12 +27,25 @@ export default class MainScene extends Phaser.Scene {
         const pos = (x: number) => {
           return mToPxRatio * x * Math.tan(angle) - (-9.81 / (2 * Math.pow(Math.cos(angle) * 50, 2))) * Math.pow(x, 2)
         }
-        for (let x = 0; x < 490; x += 3) {
-          if (pos(x) + 620 >= 720) {
-            break
+        if (angle > 1.25 && angle < 1.85) {
+          return
+        }
+        if (angle >= -1.565 && angle <= 1.25) {
+          for (let x = 0; x < 490; x += 3) {
+            if (pos(x) + 620 >= 720) {
+              break
+            }
+            line.setTo(mToPxRatio * x + 60, pos(x) + 620, mToPxRatio * (x + 2) + 60, pos(x + 2) + 620)
+            sketch.strokeLineShape(line)
           }
-          line.setTo(mToPxRatio * x + 60, pos(x) + 620, mToPxRatio * (x + 2) + 60, pos(x + 2) + 620)
-          sketch.strokeLineShape(line)
+        } else {
+          for (let x = 0; x > -490; x -= 3) {
+            if (pos(x) + 620 >= 720) {
+              break
+            }
+            line.setTo(mToPxRatio * x + 60, pos(x) + 620, mToPxRatio * (x + 2) + 60, pos(x + 2) + 620)
+            sketch.strokeLineShape(line)
+          }
         }
       },
       this
