@@ -10,7 +10,7 @@ export default class MainScene extends Phaser.Scene {
 
   create() {
     this.fpsText = new FpsText(this)
-    this.matter.world.setBounds()
+    this.matter.world.setBounds(0, 0, 1280, 720, 256, false, false, false, true)
     var cannonHead = this.add.image(60, 621, 'cannon_head').setDepth(1)
     var cannon = this.add.image(60, 669, 'cannon_body').setDepth(1)
     var angle = 0
@@ -30,7 +30,7 @@ export default class MainScene extends Phaser.Scene {
         return
       }
       if (angle >= -1.565 && angle <= 1.25) {
-        for (let x = 0; x < 490; x += 3) {
+        for (let x = 0; x < 720; x += 3) {
           if (pos(x) + 620 >= 720) {
             break
           }
@@ -38,7 +38,7 @@ export default class MainScene extends Phaser.Scene {
           sketch.strokeLineShape(line)
         }
       } else {
-        for (let x = 0; x > -490; x -= 3) {
+        for (let x = 0; x > -720; x -= 3) {
           if (pos(x) + 620 >= 720) {
             break
           }
@@ -81,6 +81,9 @@ export default class MainScene extends Phaser.Scene {
       //    x: Math.cos(angle) * 3,
       //    y: Math.sin(angle) * 3
       //  })
+      setTimeout(() => {
+        ball.destroy()
+      }, 5000)
     })
     this.input.on('wheel', event => {
       if (event.deltaY < 0) {
@@ -102,13 +105,6 @@ export default class MainScene extends Phaser.Scene {
     p1.add(data, 'range').listen()
     p1.add(data, 'peak').listen()
     p1.open()
-    // display the Phaser.VERSION
-    this.add
-      .text(this.cameras.main.width - 15, 15, `Phaser v${Phaser.VERSION}`, {
-        color: 'white',
-        fontSize: '24px'
-      })
-      .setOrigin(1, 0)
   }
   update() {
     this.fpsText.update()
